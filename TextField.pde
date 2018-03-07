@@ -31,7 +31,7 @@ class TextField {
       
       yTmp = int((y[2] - y[0]) / 2 + y[0]);
       
-      textSize((y[2] - y[0]) / 5);
+      textSize((y[2] - y[0]) / 3);
       strokeWeight(4);
       fill(fColor[3], fColor[4], fColor[5]);
       text(fTxt, xTmp, yTmp);
