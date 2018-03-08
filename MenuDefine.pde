@@ -16,6 +16,12 @@ void menuDef() {
   
   hostB = new Button(x_launch, y_launch, "Launch the Game !", 3, c_host);
   
+  int[] x_test = {int(width / 10), int(width / 10), int(width * 4 / 10), int(width * 1 / 3), int(width * 2 / 3), int(width * 6 / 10), int(width * 9 / 10), int(width * 9 / 10)};
+  int[] y_test = {int(height * 3 / 20), int(height * 5 / 20), int(height * 3 / 20), int(height * 5 / 20), int(height * 3 / 20), int(height * 5 / 20), int(height * 3 / 20), int(height * 5 / 20)};
+  String[] ch_test = {"Choose ME !", "No ! Me !", "OH ! Yes !"};
+  
+  test = new ChoiceBox(x_test, y_test, ch_test, c_host);
+  
   int[] x_ip = {int(width / 2 - 10), int(width / 2 + 10), int(width / 2 + 10), int(width / 2 - 10)};
   int[] y_ip = {0, 0, int(height / 10), int(height / 10)};
   

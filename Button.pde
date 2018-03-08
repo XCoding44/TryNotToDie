@@ -65,6 +65,12 @@ class Button {
       if (mousePressed) {
         state = 2;
         STATE = action;
+        if (action == 1) {
+          netSetup(false, ""); /* "String ip" not useful in this case because setup of Server */
+        }
+        else if (action == 2) {
+          netSetup(true, "127.0.0.1");
+        }
       }
       else {
         state = 1;
