@@ -38,4 +38,12 @@ class TextField {
     }
   }
   
+  void setNewString(String newOne) {
+    fTxt = newOne;
+  }
+  
+  String getCurString() {
+    return fTxt;
+  }
+  
 }

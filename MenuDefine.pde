@@ -14,18 +14,39 @@ void menuDef() {
   int[] y_launch = {int(height * 9 / 10), int(height * 9 / 10), height, height};
   int[] c_host = {255, 255, 255, 0, 200, 0};
   
-  hostB = new Button(x_launch, y_launch, "Launch the Game !", 3, c_host);
+  hostB = new Button(x_launch, y_launch, "Launch the Game !", 4, c_host);
   
-  int[] x_test = {int(width / 10), int(width / 10), int(width * 4 / 10), int(width * 1 / 3), int(width * 2 / 3), int(width * 6 / 10), int(width * 9 / 10), int(width * 9 / 10)};
-  int[] y_test = {int(height * 3 / 20), int(height * 5 / 20), int(height * 3 / 20), int(height * 5 / 20), int(height * 3 / 20), int(height * 5 / 20), int(height * 3 / 20), int(height * 5 / 20)};
-  String[] ch_test = {"Choose ME !", "No ! Me !", "OH ! Yes !"};
+  int[] x_player = {int(width * 3 / 10), int(width * 3 / 10), int(width * 21 / 40), int(width * 19 / 40), int(width * 29 / 40), int(width * 27 / 40), int(width * 9 / 10), int(width * 9 / 10)};
+  int[] y_player = {int(height * 3 / 20), int(height * 5 / 20), int(height * 3 / 20), int(height * 5 / 20), int(height * 3 / 20), int(height * 5 / 20), int(height * 3 / 20), int(height * 5 / 20)};
+  String[] ch_player = {"3", "4", "5"};
   
-  test = new ChoiceBox(x_test, y_test, ch_test, c_host);
+  int[] x_mode = {int(width * 3 / 10), int(width * 3 / 10), int(width * 25 / 40), int(width * 23 / 40), int(width * 9 / 10), int(width * 9 / 10)};
+  int[] y_mode = {int(height * 6 / 20), int(height * 8 / 20), int(height * 6 / 20), int(height * 8 / 20), int(height * 6 / 20), int(height * 8 / 20)};
+  String[] ch_mode = {"Free-for-all", "Cooperation"};
+  
+  hostC = new ChoiceBox[2];
+  hostC[0] = new ChoiceBox(x_player, y_player, ch_player, c_host);
+  hostC[1] = new ChoiceBox(x_mode, y_mode, ch_mode, c_host);
   
   int[] x_ip = {int(width / 2 - 10), int(width / 2 + 10), int(width / 2 + 10), int(width / 2 - 10)};
   int[] y_ip = {0, 0, int(height / 10), int(height / 10)};
   
-  hostF = new TextField[2];
+  int[] x_lbl_play = {int(width / 5 - 10), int(width / 5 + 10), int(width / 5 + 10), int(width / 5 - 10)};
+  int[] y_lbl_play = {int(height * 3 / 20), int(height * 3 / 20), int(height * 5 / 20), int(height * 5 / 20)};
+  
+  int[] x_lbl_mode = {int(width / 5 - 10), int(width / 5 + 10), int(width / 5 + 10), int(width / 5 - 10)};
+  int[] y_lbl_mode = {int(height * 6 / 20), int(height * 6 / 20), int(height * 8 / 20), int(height * 8 / 20)};
+  
+  int[] x_play_list = {int(width * 3 / 5 - 10), int(width * 3 / 5 + 10), int(width * 3 / 5 + 10), int(width * 3 / 5 - 10)};
+  int[] y_play_list = {int(height * 23 / 40), int(height * 23 / 40), int(height * 29 / 40), int(height * 29 / 40)};
+  
+  int[] x_lbl_list = {int(width / 5 - 10), int(width / 5 + 10), int(width / 5 + 10), int(width / 5 - 10)};
+  int[] y_lbl_list = {int(height * 12 / 20), int(height * 12 / 20), int(height * 14 / 20), int(height * 14 / 20)};
+  
+  hostF = new TextField[5];
   hostF[0] = new TextField(false, x_ip, y_ip, "127.0.0.1", c_host);
-  hostF[1] = new TextField(false, x_ip, y_ip, "127.0.0.1", c_host);
+  hostF[1] = new TextField(false, x_lbl_play, y_lbl_play, "Number of players", c_host);
+  hostF[2] = new TextField(false, x_lbl_mode, y_lbl_mode, "Type of battle", c_host);
+  hostF[3] = new TextField(false, x_play_list, y_play_list, "", c_host);
+  hostF[4] = new TextField(false, x_lbl_list, y_lbl_list, "Connected players", c_host);
 }
