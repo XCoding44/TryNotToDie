@@ -22,7 +22,7 @@ ArrayList<String> getMsg(boolean _cl) {
     Client tmp = se.available();
     
     while(tmp != null) {
-      msgs.add(tmp.readString() + ":" + tmp.ip());
+      msgs.add(tmp.readString() + " : " + tmp.ip());
       
       tmp = se.available();
     }

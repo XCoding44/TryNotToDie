@@ -3,48 +3,64 @@ class ChoiceBox {
   int[] x;
   int[] y;
   String[] choices;
+  PImage[] Ichoices;
   int[] cColor;
   int state = 1;
+  boolean str_choices;
   
   ChoiceBox(int[] _x, int[] _y, String[] _choices, int[] _cColor) {
     x = _x;
     y = _y;
     choices = _choices;
     cColor = _cColor;
+    str_choices = true;
+  }
+  
+  ChoiceBox(int[] _x, int[] _y, PImage[] _choices, int[] _cColor) {
+    x = _x;
+    y = _y;
+    Ichoices = _choices;
+    cColor = _cColor;
+    str_choices = false;
   }
   
   void display() {
-    int subColor;
+    if (str_choices) {
+      int subColor;
       
-    strokeWeight(4);
+      strokeWeight(4);
     
-    for (int i = 1; i <= (x.length - 2)/2; i++) {
-      if (i == state) {
-        subColor = 0;
-      }
-      else {
-        subColor = 50;
-      }
+      for (int i = 1; i <= (x.length - 2)/2; i++) {
+        if (i == state) {
+          subColor = 0;
+        }
+        else {
+          subColor = 50;
+        }
       
-      fill(cColor[0] - subColor, cColor[1] - subColor, cColor[2] - subColor);
-      stroke(cColor[3] - subColor, cColor[4] - subColor, cColor[5] - subColor);
+        fill(cColor[0] - subColor, cColor[1] - subColor, cColor[2] - subColor);
+        stroke(cColor[3] - subColor, cColor[4] - subColor, cColor[5] - subColor);
       
-      quad(x[2*i-2], y[2*i-2], x[2*i], y[2*i], x[2*i+1], y[2*i+1], x[2*i-1], y[2*i-1]);
+        quad(x[2*i-2], y[2*i-2], x[2*i], y[2*i], x[2*i+1], y[2*i+1], x[2*i-1], y[2*i-1]);
       
-      int xTmp = 0; int yTmp = 0;
+        int xTmp = 0; int yTmp = 0;
     
-      if (x[2*i+1] - x[2*i-2] <= x[2*i] - x[2*i-1]) {
-        xTmp = int((x[2*i+1] - x[2*i-2]) / 2 + x[2*i-2]);
-        yTmp = int((y[2*i+1] - y[2*i-2]) / 2 + y[2*i-2]);
-      }
-      else {
-        xTmp = int((x[2*i] - x[2*i-1]) / 2 + x[2*i-1]);
-        yTmp = int((y[2*i+1] - y[2*i-2]) / 2 + y[2*i-2]);
-      }
+        if (x[2*i+1] - x[2*i-2] <= x[2*i] - x[2*i-1]) {
+          xTmp = int((x[2*i+1] - x[2*i-2]) / 2 + x[2*i-2]);
+          yTmp = int((y[2*i+1] - y[2*i-2]) / 2 + y[2*i-2]);
+        }
+        else {
+          xTmp = int((x[2*i] - x[2*i-1]) / 2 + x[2*i-1]);
+          yTmp = int((y[2*i+1] - y[2*i-2]) / 2 + y[2*i-2]);
+        }
       
-      textSize((y[2*i+1] - y[2*i-2]) / 3);
-      fill(cColor[3] - subColor, cColor[4] - subColor, cColor[5] - subColor);
-      text(choices[i-1], xTmp, yTmp);
+        textSize((y[2*i+1] - y[2*i-2]) / 3);
+        fill(cColor[3] - subColor, cColor[4] - subColor, cColor[5] - subColor);
+        text(choices[i-1], xTmp, yTmp);
+      }
+    }
+    else {
+      /* Show the imgs... */
     }
   }
   

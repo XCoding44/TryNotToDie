@@ -49,4 +49,21 @@ void menuDef() {
   hostF[2] = new TextField(false, x_lbl_mode, y_lbl_mode, "Type of battle", c_host);
   hostF[3] = new TextField(false, x_play_list, y_play_list, "", c_host);
   hostF[4] = new TextField(false, x_lbl_list, y_lbl_list, "Connected players", c_host);
+  
+  /* JOIN MENU */
+  int[] x_join_ip = {int(width * 5 / 20), int(width * 16 / 20), int(width * 15 / 20), int(width * 4 / 20)};
+  int[] y_join_ip = {0, 0, int(height / 10), int(height / 10)};
+  int[] c_join = {255, 255, 255, 200, 0, 0};
+  
+  int[] x_name = {int(width * 5 / 20), int(width * 16 / 20), int(width * 15 / 20), int(width * 4 / 20)};
+  int[] y_name = {int(height * 3 / 20), int(height * 3 / 20), int(height * 5 / 20), int(height * 5 / 20)};
+  
+  joinF = new TextField[2];
+  joinF[0] = new TextField(true, x_join_ip, y_join_ip, "> Host IP <", c_join);
+  joinF[1] = new TextField(true, x_name, y_name, "> Your name <", c_join);
+  
+  int[] x_connect = {int(width * 7 / 20), int(width * 14 / 20), int(width * 13 / 20), int(width * 6 / 20)};
+  int[] y_connect = {int(height * 9 / 10), int(height * 9 / 10), height, height};
+  
+  joinB = new Button(x_connect, y_connect, "Connect to the host !", 3, c_join);
 }

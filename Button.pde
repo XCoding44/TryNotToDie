@@ -68,8 +68,10 @@ class Button {
         if (action == 1) {
           netSetup(false, ""); /* "String ip" not useful in this case because setup of Server */
         }
-        else if (action == 2) {
-          netSetup(true, "127.0.0.1");
+        else if (action == 3) {
+          netSetup(true, joinF[0].getCurString());
+          
+          cl.write("pseudo:"+joinF[1].getCurString());
         }
       }
       else {
