@@ -9,6 +9,13 @@ void menuDef() {
   menuB[0] = new Button(x_host, y_host, "Host a game", 1, c_menu);
   menuB[1] = new Button(x_join, y_host, "Join a game", 2, c_menu);
   
+  /* RETURN BUTTON */
+  int[] x_return = {0, int(width / 20), int(width / 20), 0};
+  int[] y_return = {0, 0, int(height / 20), int(height / 20)};
+  int[] c_return = {255, 0, 0, 255, 255, 255};
+  
+  homeReturn = new Button(x_return, y_return, "<<", 0, c_return);
+  
   /* HOST MENU */
   int[] x_launch = {int(width * 7 / 20), int(width * 14 / 20), int(width * 13 / 20), int(width * 6 / 20)};
   int[] y_launch = {int(height * 9 / 10), int(height * 9 / 10), height, height};

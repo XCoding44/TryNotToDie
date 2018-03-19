@@ -8,6 +8,9 @@ ArrayList<String> NAMES = new ArrayList<String>();
 /* MAIN MENU */
 Button[] menuB; /* One for the host menu, the other one for the join menu */
 
+/* RETURN BUTTON */
+Button homeReturn;
+
 /* HOST MENU */
 Button hostB; /* Only one to launch the game */
 ChoiceBox[] hostC; /* One for the number of players, an other for the game mode */
@@ -38,6 +41,9 @@ void draw() {
   else if (STATE == 1) {
     hostB.display();
     hostB.checkState();
+    
+    homeReturn.display();
+    homeReturn.checkState();
     
     for(int i = 0; i < hostF.length; i++) {
       hostF[i].display();
@@ -73,6 +79,9 @@ void draw() {
     
     joinB.display();
     joinB.checkState();
+    
+    homeReturn.display();
+    homeReturn.checkState();
   }
 }
 

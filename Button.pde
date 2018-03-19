@@ -25,7 +25,14 @@ class Button {
     
     strokeWeight(4);
     fill(bColor[0] - subColor, bColor[1] - subColor, bColor[2] - subColor);
-    stroke(bColor[3] - subColor, bColor[4] - subColor, bColor[5] - subColor);
+    
+    if (bTxt.equals("<<")) {
+      noStroke();
+    }
+    else {
+      stroke(bColor[3] - subColor, bColor[4] - subColor, bColor[5] - subColor);
+    }
+    
     quad(x[0], y[0], x[1], y[1], x[2], y[2], x[3], y[3]);
     
     int xTmp = 0; int yTmp = 0;
@@ -39,7 +46,12 @@ class Button {
       yTmp = int((y[2] - y[0]) / 2 + y[0]);
     }
     
-    textSize((y[2] - y[0]) / 3);
+    if (bTxt == "<<") {
+      textSize((y[2] - y[0]) / 1.5);
+    }
+    else {
+      textSize((y[2] - y[0]) / 3);
+    }
     fill(bColor[3] - subColor, bColor[4] - subColor, bColor[5] - subColor);
     text(bTxt, xTmp, yTmp);
   }
