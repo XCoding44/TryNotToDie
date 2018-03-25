@@ -76,14 +76,29 @@ class Button {
     if (mouseX > xMin && mouseX < xMax && mouseY > yMin && mouseY < yMax) {
       if (mousePressed) {
         state = 2;
-        STATE = action;
+        
         if (action == 1) {
           netSetup(false, ""); /* "String ip" not useful in this case because setup of Server */
+          STATE = action;
+        }
+        else if (action != 3) {
+          STATE = action;
         }
         else if (action == 3) {
-          netSetup(true, joinF[0].getCurString());
+          String[] m1 = match(joinF[0].getCurString(), "^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}$");
+          String[] m2 = match(joinF[1].getCurString(), "^[a-zA-Z0-9]{1,20}$");
           
-          cl.write("pseudo:"+joinF[1].getCurString());
+          if (m1 != null && m2 != null) {
+            STATE = action;
+            netSetup(true, joinF[0].getCurString());
+            cl.write("pseudo:"+joinF[1].getCurString());
+          }
+          else if (m1 == null) {
+            joinF[2].fTxt = "Please enter a valid IP";
+          }
+          else if (m2 == null) {
+            joinF[2].fTxt = "Please enter a valid name (letters and numbers only)";
+          }
         }
       }
       else {

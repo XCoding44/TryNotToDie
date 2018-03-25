@@ -51,7 +51,7 @@ void menuDef() {
   int[] y_lbl_list = {int(height * 12 / 20), int(height * 12 / 20), int(height * 14 / 20), int(height * 14 / 20)};
   
   hostF = new TextField[5];
-  hostF[0] = new TextField(false, x_ip, y_ip, "127.0.0.1", c_host);
+  hostF[0] = new TextField(false, x_ip, y_ip, "NONE", c_host);
   hostF[1] = new TextField(false, x_lbl_play, y_lbl_play, "Number of players", c_host);
   hostF[2] = new TextField(false, x_lbl_mode, y_lbl_mode, "Type of battle", c_host);
   hostF[3] = new TextField(false, x_play_list, y_play_list, "", c_host);
@@ -65,9 +65,17 @@ void menuDef() {
   int[] x_name = {int(width * 5 / 20), int(width * 16 / 20), int(width * 15 / 20), int(width * 4 / 20)};
   int[] y_name = {int(height * 3 / 20), int(height * 3 / 20), int(height * 5 / 20), int(height * 5 / 20)};
   
-  joinF = new TextField[2];
+  int[] x_error = {int(width / 2 - 10), int(width / 2 + 10), int(width / 2 + 10), int(width / 2 - 10)};
+  int[] y_error = {int(height * 8 / 10), int(height * 8 / 10), int(height * 9 / 10), int(height * 9 / 10)};
+  
+  int[] x_waiting = {int(width / 2 - 10), int(width / 2 + 10), int(width / 2 + 10), int(width / 2 - 10)};
+  int[] y_waiting = {int(height * 4 / 10), int(height * 4 / 10), int(height * 6 / 10), int(height * 6 / 10)};
+  
+  joinF = new TextField[4];
   joinF[0] = new TextField(true, x_join_ip, y_join_ip, "> Host IP <", c_join);
   joinF[1] = new TextField(true, x_name, y_name, "> Your name <", c_join);
+  joinF[2] = new TextField(false, x_error, y_error, "", c_join);
+  joinF[3] = new TextField(false, x_waiting, y_waiting, "Waiting for host...", c_join);
   
   int[] x_connect = {int(width * 7 / 20), int(width * 14 / 20), int(width * 13 / 20), int(width * 6 / 20)};
   int[] y_connect = {int(height * 9 / 10), int(height * 9 / 10), height, height};

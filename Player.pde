@@ -3,37 +3,41 @@ class Player {
   float _y;
   float sX;
   float sY;
+  boolean jumping;
+  float g;
   
-  Player() {
-    _x = 10; _y = height - 20;
-    sX = 0.5; sY = -12;
+  Player(float _g) {
+    _x = width / 2; _y = height * 3 / 4;
+    sX = 0; sY = 0;
+    jumping = false;
+    g = _g;
   }
   
-  public void move(float g) {
+  public void move() {
     _x += sX;
     _y += sY;
-    sY += g;
     
-    if (sY > 0) {
+    if (jumping) {
+      sY += g;
+    }
+    
+    if (sY > 0 && jumping) {
       checkCollision();
     }
   }
   
   public void display() {
     fill(255);
-    rect(_x, _y, 20, 20);
+    rect(width / 2, _y, 40, 40);
   }
   
   public void checkCollision() {
-    println(_y + " / " + sY);
-    
-    if (_y + 10 > height)  {
-      sY = 0;
-      sX = 0;
-    }
-    
-    if (_x > width) {
-      sX = 0;
+    if (jumping) {
+      if (_y + 10 > height / 2)  {
+        sY = 0;
+        sX = 0;
+        jumping = false;
+      }
     }
   }
 }

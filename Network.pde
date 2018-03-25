@@ -7,6 +7,7 @@ void netSetup(boolean _cl, String ip) {
   }
   else {
     se = new Server(this, 19132);
+    hostF[0].fTxt = se.ip();
   }
 }
 
@@ -22,7 +23,7 @@ ArrayList<String> getMsg(boolean _cl) {
     Client tmp = se.available();
     
     while(tmp != null) {
-      msgs.add(tmp.readString() + " : " + tmp.ip());
+      msgs.add(tmp.readString());
       
       tmp = se.available();
     }
