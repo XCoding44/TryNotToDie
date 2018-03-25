@@ -77,28 +77,42 @@ class Button {
       if (mousePressed) {
         state = 2;
         
-        if (action == 1) {
-          netSetup(false, ""); /* "String ip" not useful in this case because setup of Server */
-          STATE = action;
-        }
-        else if (action != 3) {
-          STATE = action;
-        }
-        else if (action == 3) {
-          String[] m1 = match(joinF[0].getCurString(), "^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}$");
-          String[] m2 = match(joinF[1].getCurString(), "^[a-zA-Z0-9]{1,20}$");
-          
-          if (m1 != null && m2 != null) {
+        switch(action) {
+          case 1:
+            netSetup(false, ""); /* "String ip" not useful in this case because setup of Server */            
             STATE = action;
-            netSetup(true, joinF[0].getCurString());
-            cl.write("pseudo:"+joinF[1].getCurString());
-          }
-          else if (m1 == null) {
-            joinF[2].fTxt = "Please enter a valid IP";
-          }
-          else if (m2 == null) {
-            joinF[2].fTxt = "Please enter a valid name (letters and numbers only)";
-          }
+          break;
+          
+          case 2:
+            String[] m1 = match(joinF[0].getCurString(), "^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}$");
+            String[] m2 = match(joinF[1].getCurString(), "^[a-zA-Z0-9]{1,20}$");
+          
+            if (m1 != null && m2 != null) {
+              STATE = action;
+              netSetup(true, joinF[0].getCurString());
+              cl.write("pseudo:"+joinF[1].getCurString());
+            }
+            else if (m1 == null) {
+              joinF[2].fTxt = "Please enter a valid IP";
+            }
+            else if (m2 == null) {
+              joinF[2].fTxt = "Please enter a valid name (letters and numbers only)";
+            }
+          break;
+          
+          case 4:
+            if (NUM_PLAYER == int(hostC[0].getChoiceAsStr())) {
+              STATE = action;
+              
+              /* Send all the players to every one + TEST HERE ! */              
+              
+              se.write("launch_game");
+            }
+          break;
+          
+          default:
+            STATE = action;
+          break;
         }
       }
       else {

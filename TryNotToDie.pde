@@ -4,6 +4,7 @@ int STATE = 0; /* 0 = main menu / 1 = host menu / 2 = join menu / 3 = connected 
 int NUM_PLAYER = 0;
 TextField activeTF;
 ArrayList<String> NAMES = new ArrayList<String>();
+ArrayList<Player> PLAYERS = new ArrayList<Player>();
 int back_x = 0;
 
 /* MAIN MENU */
@@ -26,6 +27,7 @@ Player c_player;
 
 /* BACKGROUNDS */
 PImage grass;
+PImage smile;
 
 /* PROGRAM START */
 void setup () {
@@ -36,10 +38,11 @@ void setup () {
   
   menuDef();
   
-  c_player = new Player(10);
-  
   grass = loadImage("data/grass.png");
   grass.resize(width / 2, height / 2);
+  
+  smile = loadImage("data/Smile-icon-tmp.png");
+  smile.resize(40, 40);
 }
 
 void draw() {
@@ -77,7 +80,6 @@ void draw() {
         
         if (tmpMsg.contains("pseudo:") && NUM_PLAYER < int(hostC[0].getChoiceAsStr())) {
           NUM_PLAYER++;
-          println(tmpMsg);
           tmpMsg = tmpMsg.substring(7);
           
           NAMES.add(tmpMsg);
@@ -99,6 +101,24 @@ void draw() {
   }
   else if (STATE == 3) {
     joinF[3].display();
+    
+    c_player = new Player(10, smile, joinF[1].getCurString(), true);
+    
+    ArrayList<String> msgs = getMsg(true);
+    
+    if (msgs.size() > 0) {
+      
+      for(int i = 0; i < msgs.size(); i++) {
+        String tmpMsg = msgs.get(i);
+        
+        if (tmpMsg.equals("launch_game")) {
+          STATE = 4;
+        }
+        else if (tmpMsg.contains("pseudo:")) {
+          PLAYERS.add(new Player(10, smile, tmpMsg.substring(7), false));
+        }
+      }
+    }
   }
   else if (STATE == 4) {
     if (back_x == -width / 2) {
