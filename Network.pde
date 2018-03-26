@@ -1,5 +1,5 @@
-Client cl;
-Server se;
+Client cl = null;
+Server se = null;
 
 void netSetup(boolean _cl, String ip) {
   if (_cl) {
@@ -11,6 +11,15 @@ void netSetup(boolean _cl, String ip) {
   }
 }
 
+void sendMsg(boolean _cl, String message) {
+  if (_cl) {
+    cl.write(message);
+  }
+  else {
+    se.write(message);
+  }
+}
+  
 ArrayList<String> getMsg(boolean _cl) {
   ArrayList<String> msgs = new ArrayList<String>();
   

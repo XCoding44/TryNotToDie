@@ -128,6 +128,46 @@ void draw() {
       back_x = 0;
     }
     
+    if (cl != null) {
+      /* Le client envoit sa position au serveur */      
+      sendMsg(true, "position:" + c_player._x + ":" + c_player._y + ":" + c_player.name);
+      
+      ArrayList<String> msgs = getMsg(true);
+      
+      for(String msg : msgs) {
+        if (msg.contains("position:")) {
+          String[] splits = msg.split(":");
+          
+          for (Player p : PLAYERS) {
+            if (splits[3].equals(p.name)) {
+              p._x = int(splits[1]);
+              p._y = int(splits[2]);
+            }
+          }
+        }
+      }
+    }
+    else if (se != null) {
+      sendMsg(false, "position:" + c_player._x + ":" + c_player._y + ":" + c_player.name);
+      
+      ArrayList<String> msgs = getMsg(true);
+      
+      for(String msg : msgs) {
+        if (msg.contains("position:")) {
+          sendMsg(false, msg);
+          
+          String[] splits = msg.split(":");
+          
+          for (Player p : PLAYERS) {
+            if (splits[3].equals(p.name)) {
+              p._x = int(splits[1]);
+              p._y = int(splits[2]);
+            }
+          }
+        }
+      }
+    }
+    
     image(grass, back_x, height / 2);
     image(grass, width / 2 + back_x, height / 2);
     
@@ -135,7 +175,7 @@ void draw() {
      
     image(grass, back_x + width, height / 2);
     
-    c_player.display();
+    c_player.display(0); /* 0 because not used in this method */
     c_player.move();
   }
 }
