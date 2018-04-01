@@ -1,7 +1,6 @@
 class Player {
   float _x;
   float _y;
-  float sX;
   float sY;
   boolean jumping;
   float g;
@@ -12,7 +11,7 @@ class Player {
   
   Player(float _g, PImage _skin, String _name, boolean control) {
     _x = width / 2; _y = height * 3 / 4;
-    sX = 0; sY = 0;
+    sY = 0;
     jumping = false;
     g = _g;
     skin = _skin;
@@ -21,7 +20,6 @@ class Player {
   }
   
   public void move() {
-    _x += sX;
     _y += sY;
     
     if (jumping) {
@@ -35,9 +33,9 @@ class Player {
   
   public void display(int x_control) {
     if (controlled) {
-      fill(255);
+      fill(0, 127, 255);
       textSize(20);
-      text(name, width / 2, _y + 20);
+      text(name, width / 2, _y - 40);
     
       fill(255);
       rect(width / 2, _y, 40, 40);
@@ -45,7 +43,7 @@ class Player {
     else {
       fill(255);
       textSize(10);
-      text(name, (_x - x_control) + (width / 2), _y);
+      text(name, (_x - x_control) + (width / 2), _y - 40);
       
       fill(255);
       rect((_x - x_control) + (width / 2), _y, 40, 40);
@@ -56,7 +54,6 @@ class Player {
     if (jumping) {
       if (_y + 10 > height / 2)  {
         sY = 0;
-        sX = 0;
         jumping = false;
       }
     }

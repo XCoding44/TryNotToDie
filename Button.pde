@@ -84,6 +84,10 @@ class Button {
           break;
           
           case 2:
+            STATE = action;
+          break;
+          
+          case 3:
             String[] m1 = match(joinF[0].getCurString(), "^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}$");
             String[] m2 = match(joinF[1].getCurString(), "^[a-zA-Z0-9]{1,20}$");
           
@@ -101,12 +105,14 @@ class Button {
           break;
           
           case 4:
-            if (NUM_PLAYER == int(hostC[0].getChoiceAsStr())) {
+            if (NUM_PLAYER == int(hostC[0].getChoiceAsStr()) || key == 'p') {
+              for (String tmpStr : NAMES) {
+                se.write("pseudo:" + tmpStr);
+              }
+              
               STATE = action;
-              
-              /* Send all the players to every one + TEST HERE ! */              
-              
-              se.write("launch_game");
+              se.write(":launch_game");
+              LAST_SENT = millis();
             }
           break;
           

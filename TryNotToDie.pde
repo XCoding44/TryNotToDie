@@ -6,6 +6,7 @@ TextField activeTF;
 ArrayList<String> NAMES = new ArrayList<String>();
 ArrayList<Player> PLAYERS = new ArrayList<Player>();
 int back_x = 0;
+int LAST_SENT = 0;
 
 /* MAIN MENU */
 Button[] menuB; /* One for the host menu, the other one for the join menu */
@@ -23,7 +24,7 @@ TextField[] joinF; /* One for the ip, the other one for the name, the last one f
 Button joinB; /* Only one to connect to the host */
 
 /* PLAYER */
-Player c_player;
+Player c_player = null;
 
 /* BACKGROUNDS */
 PImage grass;
@@ -47,7 +48,6 @@ void setup () {
 
 void draw() {
   background(0);
-  println(STATE);
   
   if (STATE == 0) {
     for(int i = 0; i < menuB.length; i++) {
@@ -80,9 +80,12 @@ void draw() {
         
         if (tmpMsg.contains("pseudo:") && NUM_PLAYER < int(hostC[0].getChoiceAsStr())) {
           NUM_PLAYER++;
+          
           tmpMsg = tmpMsg.substring(7);
           
           NAMES.add(tmpMsg);
+          PLAYERS.add(new Player(10, smile, tmpMsg, false));
+          
           hostF[3].setNewString(hostF[3].getCurString() + tmpMsg + "\n");
         }
       }
@@ -111,16 +114,27 @@ void draw() {
       for(int i = 0; i < msgs.size(); i++) {
         String tmpMsg = msgs.get(i);
         
-        if (tmpMsg.equals("launch_game")) {
+        String[] splits = tmpMsg.split(":");
+        
+        if (tmpMsg.contains("pseudo:")) {
+          println(tmpMsg);
+        }
+        
+        if (tmpMsg.contains("launch_game")) {
           STATE = 4;
         }
-        else if (tmpMsg.contains("pseudo:")) {
-          PLAYERS.add(new Player(10, smile, tmpMsg.substring(7), false));
+        
+        if (tmpMsg.contains("pseudo:") && !splits[1].equals(c_player.name)) {
+          PLAYERS.add(new Player(10, smile, splits[1], false));
         }
       }
     }
   }
   else if (STATE == 4) {
+    if (c_player == null) {
+      c_player = new Player(10, smile, "host:gm", true);
+    }
+    
     if (back_x == -width / 2) {
       back_x = 0;
     }
@@ -129,17 +143,21 @@ void draw() {
     }
     
     if (cl != null) {
-      /* Le client envoit sa position au serveur */      
-      sendMsg(true, "position:" + c_player._x + ":" + c_player._y + ":" + c_player.name);
+      /* Le client envoit sa position au serveur */
+      if (LAST_SENT + 50 <= millis()) {
+        LAST_SENT = millis();
+        sendMsg(true, "position:" + c_player._x + ":" + c_player._y + ":" + c_player.name + "-");
+      }
       
       ArrayList<String> msgs = getMsg(true);
       
       for(String msg : msgs) {
         if (msg.contains("position:")) {
+          
           String[] splits = msg.split(":");
           
           for (Player p : PLAYERS) {
-            if (splits[3].equals(p.name)) {
+            if (splits[3].equals(p.name) && int(splits[1]) != p._x) {
               p._x = int(splits[1]);
               p._y = int(splits[2]);
             }
@@ -148,18 +166,22 @@ void draw() {
       }
     }
     else if (se != null) {
-      sendMsg(false, "position:" + c_player._x + ":" + c_player._y + ":" + c_player.name);
+      if (LAST_SENT + 50 <= millis()) {
+        LAST_SENT = millis();
+        sendMsg(false, "position:" + c_player._x + ":" + c_player._y + ":" + c_player.name + "-");
+      }
       
-      ArrayList<String> msgs = getMsg(true);
+      ArrayList<String> msgs = getMsg(false);
       
       for(String msg : msgs) {
         if (msg.contains("position:")) {
+          
           sendMsg(false, msg);
           
           String[] splits = msg.split(":");
           
           for (Player p : PLAYERS) {
-            if (splits[3].equals(p.name)) {
+            if (splits[3].equals(p.name) && int(splits[1]) != p._x) {
               p._x = int(splits[1]);
               p._y = int(splits[2]);
             }
@@ -174,6 +196,10 @@ void draw() {
     image(grass, back_x - (width / 2), height / 2);
      
     image(grass, back_x + width, height / 2);
+    
+    for(Player tmpP : PLAYERS) {
+      tmpP.display(int(c_player._x));
+    }
     
     c_player.display(0); /* 0 because not used in this method */
     c_player.move();
@@ -195,7 +221,7 @@ void keyPressed() {
     if (keyCode != BACKSPACE && keyCode != RETURN && keyCode != ENTER) {
       activeTF.addToString(str(key));
     }
-    else if (keyCode == BACKSPACE) {
+    else if (keyCode == BACKSPACE && !activeTF.getCurString().equals("")) {
       activeTF.removeFromString(1);
     }
     else if (keyCode == RETURN || keyCode == ENTER) {
@@ -205,14 +231,12 @@ void keyPressed() {
   }
   else if (STATE == 4) {
     if (keyCode == RIGHT) {
-      if (c_player.sX != 5)
-        c_player.sX = 5;
+      c_player._x += 5;
       
       back_x -= 5;
     }
     else if (keyCode == LEFT) {
-      if (c_player.sX != -5)
-        c_player.sX = -5;
+      c_player._x -= 5;
       
       back_x += 5;
     }
@@ -221,6 +245,6 @@ void keyPressed() {
 
 void keyReleased() {
   if (keyCode == RIGHT || keyCode == LEFT) {
-    c_player.sX = 0;
+    c_player._x += 0;
   }
 }
