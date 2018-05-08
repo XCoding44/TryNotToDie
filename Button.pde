@@ -94,7 +94,7 @@ class Button {
             if (m1 != null && m2 != null) {
               STATE = action;
               netSetup(true, joinF[0].getCurString());
-              cl.write("pseudo:"+joinF[1].getCurString());
+              cl.write("pseudo:"+joinF[1].getCurString()+"-");
             }
             else if (m1 == null) {
               joinF[2].fTxt = "Please enter a valid IP";
@@ -107,11 +107,15 @@ class Button {
           case 4:
             if (NUM_PLAYER == int(hostC[0].getChoiceAsStr()) || key == 'p') {
               for (String tmpStr : NAMES) {
-                se.write("pseudo:" + tmpStr);
+                se.write("pseudo:" + tmpStr+"-");
+                delay(200);
               }
               
+              se.write("pseudo:gm-"); /* Here we send the game master pseudo so that the client creates the gm to do some actions after */
+              delay(1000);
+              
               STATE = action;
-              se.write(":launch_game");
+              se.write("launch_game-");
               LAST_SENT = millis();
             }
           break;

@@ -3,11 +3,11 @@ Server se = null;
 
 void netSetup(boolean _cl, String ip) {
   if (_cl) {
-    println("Client created " + se);
+    println("Client created ");
     cl = new Client(this, ip, 19132);
   }
   else {
-    println("Server created " + cl);
+    println("Server created ");
     se = new Server(this, 19132);
     hostF[0].fTxt = se.ip();
   }
@@ -27,7 +27,11 @@ ArrayList<String> getMsg(boolean _cl) {
   
   if (_cl) {
     while(cl.available() > 0) {
-      msgs.add(cl.readString());
+      String tmpStr = cl.readStringUntil('-');
+      
+      tmpStr = tmpStr.substring(0, tmpStr.length() - 1);
+      
+      msgs.add(tmpStr);
     }
   }
   else {
@@ -35,7 +39,11 @@ ArrayList<String> getMsg(boolean _cl) {
     
     while(tmp != null) {
       String tmpStr = tmp.readStringUntil('-');
-      tmpStr = tmpStr.substring(0, tmpStr.length() - 1);
+      
+      if (tmpStr != null) {
+        tmpStr = tmpStr.substring(0, tmpStr.length() - 1);
+        msgs.add(tmpStr);
+      }
       
       tmp = se.available();
     }

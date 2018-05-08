@@ -39,15 +39,16 @@ void setup () {
   
   menuDef();
   
-  grass = loadImage("data/grass.png");
+  grass = loadImage("grass.png");
   grass.resize(width / 2, height / 2);
   
-  smile = loadImage("data/Smile-icon-tmp.png");
+  smile = loadImage("Smile_icon_tmp.png");
   smile.resize(40, 40);
 }
 
 void draw() {
   background(0);
+  imageMode(CORNER);
   
   if (STATE == 0) {
     for(int i = 0; i < menuB.length; i++) {
@@ -84,7 +85,7 @@ void draw() {
           tmpMsg = tmpMsg.substring(7);
           
           NAMES.add(tmpMsg);
-          PLAYERS.add(new Player(10, smile, tmpMsg, false));
+          PLAYERS.add(new Player(10, smile, tmpMsg, false, false));
           
           hostF[3].setNewString(hostF[3].getCurString() + tmpMsg + "\n");
         }
@@ -105,7 +106,7 @@ void draw() {
   else if (STATE == 3) {
     joinF[3].display();
     
-    c_player = new Player(10, smile, joinF[1].getCurString(), true);
+    c_player = new Player(10, smile, joinF[1].getCurString(), true, false);
     
     ArrayList<String> msgs = getMsg(true);
     
@@ -116,24 +117,19 @@ void draw() {
         
         String[] splits = tmpMsg.split(":");
         
-        if (tmpMsg.contains("pseudo:")) {
-          println(tmpMsg);
-        }
-        
         if (tmpMsg.contains("launch_game")) {
           STATE = 4;
         }
         
         if (tmpMsg.contains("pseudo:") && !splits[1].equals(c_player.name)) {
-          PLAYERS.add(new Player(10, smile, splits[1], false));
+          PLAYERS.add(new Player(10, smile, splits[1], false, false));
         }
       }
     }
   }
   else if (STATE == 4) {
-    if (c_player == null) {
-      c_player = new Player(10, smile, "host:gm", true);
-    }
+    if (c_player == null)
+      c_player = new Player(10, smile, "gm", true, true);
     
     if (back_x == -width / 2) {
       back_x = 0;
@@ -142,7 +138,7 @@ void draw() {
       back_x = 0;
     }
     
-    if (cl != null) {
+    if (cl != null && c_player != null) {
       /* Le client envoit sa position au serveur */
       if (LAST_SENT + 50 <= millis()) {
         LAST_SENT = millis();
@@ -163,9 +159,19 @@ void draw() {
             }
           }
         }
+        else if (msg.contains("trap:")) {
+          String[] splits = msg.split(":");
+          
+          Objects.add(new DecorObj(int(splits[1]), splits[2], true));
+        }
+        else if (msg.contains("trap_open:")) {
+          String[] splits = msg.split(":");
+          
+          Objects.get(int(splits[1])).opened = true;
+        }
       }
     }
-    else if (se != null) {
+    else if (se != null && c_player != null) {
       if (LAST_SENT + 50 <= millis()) {
         LAST_SENT = millis();
         sendMsg(false, "position:" + c_player._x + ":" + c_player._y + ":" + c_player.name + "-");
@@ -176,7 +182,7 @@ void draw() {
       for(String msg : msgs) {
         if (msg.contains("position:")) {
           
-          sendMsg(false, msg);
+          sendMsg(false, msg+"-");
           
           String[] splits = msg.split(":");
           
@@ -197,12 +203,20 @@ void draw() {
      
     image(grass, back_x + width, height / 2);
     
+    BackObjDisp(true);
+    
     for(Player tmpP : PLAYERS) {
-      tmpP.display(int(c_player._x));
+      if (!tmpP.name.equals("gm")) {
+        tmpP.display(int(c_player._x));
+      }
     }
     
-    c_player.display(0); /* 0 because not used in this method */
-    c_player.move();
+    if (c_player != null) {
+      c_player.display(0); /* 0 because not used in this method */
+      c_player.move();
+    }
+    
+    BackObjDisp(false);
   }
 }
 
@@ -230,7 +244,9 @@ void keyPressed() {
     }
   }
   else if (STATE == 4) {
-    if (keyCode == RIGHT) {
+    boolean verification = verifyDist(int(PLAYERS.get(PLAYERS.size() - 1)._x));
+    
+    if (keyCode == RIGHT && verification) {
       c_player._x += 5;
       
       back_x -= 5;
@@ -246,5 +262,17 @@ void keyPressed() {
 void keyReleased() {
   if (keyCode == RIGHT || keyCode == LEFT) {
     c_player._x += 0;
+  }
+}
+
+boolean verifyDist(int player_x) {
+  if (boolean(hostC[1].getChoiceAsInt()) && abs(player_x - c_player._x) >= width * 9 / 20) {
+    return false;
+  }
+  else if (!boolean(hostC[1].getChoiceAsInt())) {
+    return true;
+  }
+  else {
+    return true;
   }
 }
