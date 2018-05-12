@@ -1,0 +1,38 @@
+PImage JPC;
+int x=250, y=250, saut=0;
+boolean right, left;
+
+void setup(){
+  frameRate(60);
+  size(500, 500);
+  JPC = loadImage("JPC.png");
+  JPC.resize(100, 250);
+}
+void draw(){
+  background(500,500,500);
+    if (left)   x = x - 4;
+    if (right)  x = x + 4;
+    if (saut == 1) y = y - 4;
+    if (saut == 2) y = y + 5;
+    if (saut == 1 && y <= 175) saut = 2;
+    if (saut == 2 && y >= 250) saut = 0; 
+    imageMode(CENTER);
+    image(JPC,x,y);
+}
+void keyPressed() {
+    if (keyCode == RIGHT) { right = true; }
+    if (keyCode == LEFT ) { left = true;  }
+    if (keyCode == LEFT ) {
+    pushMatrix();
+    image(JPC,-JPC.width,x);
+    scale(-1.0,1.0);
+    popMatrix();}
+    if (key == CODED){
+  } else {
+   if (key == ' ' && saut == 0) saut = 1;  
+  }
+}
+void keyReleased() {
+    if (keyCode == RIGHT) { right = false; }
+    if (keyCode == LEFT ) { left = false;  }
+}
