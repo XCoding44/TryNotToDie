@@ -195,6 +195,9 @@ void draw() {
             }
           }
         }
+        else if (msg.contains("gagne")) {
+          STATE = 5;
+        }
       }
     }
     
@@ -219,6 +222,15 @@ void draw() {
     }
     
     BackObjDisp(false);
+    
+    if (c_player._x >= 4600 && !c_player.gm) {
+      STATE = 5;
+      
+      sendMsg(true, "gagne-");
+    }
+  }
+  else if (STATE == 5) {
+    menu(NUM_PLAYER, NAMES.toArray(new String[0]));
   }
 }
 

@@ -32,7 +32,7 @@ void BackObjDisp(boolean dispAtBack) { /* dispAtBack is to choose if the objects
     }
   }
   
-  if (c_player._x >= 2000 && !ended) {
+  if (c_player._x >= 3000 && !ended) {
     ended = true;
     Objects.add(new DecorObj(int(c_player._x) + width * 3 / 2, "Clouds", false)); /* Afficher les nuages de fin */
   }
