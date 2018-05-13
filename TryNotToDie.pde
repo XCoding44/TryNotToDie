@@ -85,7 +85,7 @@ void draw() {
           tmpMsg = tmpMsg.substring(7);
           
           NAMES.add(tmpMsg);
-          PLAYERS.add(new Player(10, smile, tmpMsg, false, false));
+          PLAYERS.add(new Player(10, "JPC", tmpMsg, false, false));
           
           hostF[3].setNewString(hostF[3].getCurString() + tmpMsg + "\n");
         }
@@ -106,7 +106,7 @@ void draw() {
   else if (STATE == 3) {
     joinF[3].display();
     
-    c_player = new Player(10, smile, joinF[1].getCurString(), true, false);
+    c_player = new Player(10, "JPC", joinF[1].getCurString(), true, false);
     
     ArrayList<String> msgs = getMsg(true);
     
@@ -122,14 +122,14 @@ void draw() {
         }
         
         if (tmpMsg.contains("pseudo:") && !splits[1].equals(c_player.name)) {
-          PLAYERS.add(new Player(10, smile, splits[1], false, false));
+          PLAYERS.add(new Player(10, "JPC", splits[1], false, false));
         }
       }
     }
   }
   else if (STATE == 4) {
     if (c_player == null)
-      c_player = new Player(10, smile, "gm", true, true);
+      c_player = new Player(10, "JPC", "gm", true, true);
     
     if (back_x == -width / 2) {
       back_x = 0;
@@ -248,11 +248,15 @@ void keyPressed() {
     
     if (keyCode == RIGHT && verification) {
       c_player._x += 5;
+      c_player.walking = true;
+      c_player.fw = true;
       
       back_x -= 5;
     }
     else if (keyCode == LEFT) {
       c_player._x -= 5;
+      c_player.walking = true;
+      c_player.fw = false;
       
       back_x += 5;
     }
@@ -262,6 +266,7 @@ void keyPressed() {
 void keyReleased() {
   if (keyCode == RIGHT || keyCode == LEFT) {
     c_player._x += 0;
+    c_player.walking = false;
   }
 }
 
