@@ -86,7 +86,7 @@ void draw() {
           
           tmpMsg = tmpMsg.substring(7);
           
-          NAMES.add(tmpMsg);
+          NAMES.add(tmpMsg);          
           PLAYERS.add(new Player(10, "JPC", tmpMsg, false, false));
           
           hostF[3].setNewString(hostF[3].getCurString() + tmpMsg + "\n");
@@ -124,7 +124,12 @@ void draw() {
         }
         
         if (tmpMsg.contains("pseudo:") && !splits[1].equals(c_player.name)) {
-          PLAYERS.add(new Player(10, "JPC", splits[1], false, false));
+          if (!splits[1].equals("gm")) {
+            PLAYERS.add(new Player(10, "JPC", splits[1], false, false));
+          }
+          else {
+            PLAYERS.add(new Player(10, "JPC", splits[1], false, true));
+          }
         }
       }
     }
@@ -230,7 +235,19 @@ void draw() {
     }
   }
   else if (STATE == 5) {
-    menu(NUM_PLAYER, NAMES.toArray(new String[0]));
+    String[] names = new String[5];
+    
+    if (!c_player.gm) {
+      names[0] = c_player.name;
+    }
+    
+    for (int i = 1; i < PLAYERS.size() + 1 ; i++) {
+      if (!PLAYERS.get(i - 1).gm) {
+        names[i] = PLAYERS.get(i - 1).name;
+      }
+    }
+    
+    menu(NUM_PLAYER, names);
   }
 }
 
