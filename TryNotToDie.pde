@@ -27,7 +27,7 @@ Button joinB; /* Only one to connect to the host */
 Player c_player = null;
 
 /* BACKGROUNDS */
-PImage grass, sand, smile, clouds;
+PImage grass, sand, clouds;
 
 /* PROGRAM START */
 void setup () {
@@ -46,9 +46,6 @@ void setup () {
   
   clouds = loadImage("Clouds.png");
   clouds.resize(width, height / 2);
-  
-  smile = loadImage("Smile_icon_tmp.png");
-  smile.resize(40, 40);
 }
 
 void draw() {
@@ -252,24 +249,16 @@ void keyPressed() {
     boolean verification = verifyDist(int(PLAYERS.get(PLAYERS.size() - 1)._x));
     
     if (keyCode == RIGHT && verification) {
-<<<<<<< HEAD
-      c_player._x += 5;
       c_player.walking = true;
       c_player.fw = true;
-=======
       c_player._x += 10;
->>>>>>> 1af03e579c08b9ba9d6f249f508b82e34415dc87
       
       back_x -= 10;
     }
     else if (keyCode == LEFT) {
-<<<<<<< HEAD
-      c_player._x -= 5;
       c_player.walking = true;
       c_player.fw = false;
-=======
       c_player._x -= 10;
->>>>>>> 1af03e579c08b9ba9d6f249f508b82e34415dc87
       
       back_x += 10;
     }

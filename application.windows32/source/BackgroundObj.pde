@@ -2,6 +2,8 @@ ArrayList<DecorObj> Objects = new ArrayList<DecorObj>();
 int nextObjs = 1000;
 int nextTrap = 0;
 
+boolean ended = false;
+
 void BackObjDisp(boolean dispAtBack) { /* dispAtBack is to choose if the objects drawn by this function are at the background or not */
   DecorObj tmp = null;
   int xMin, xMax, yMin, yMax;
@@ -12,10 +14,7 @@ void BackObjDisp(boolean dispAtBack) { /* dispAtBack is to choose if the objects
     if (tmp.x <= int(c_player._x) - width * 3/2) {
       Objects.remove(i);
     }
-    else if ((tmp.y < (height * 3 / 4) - 50 && dispAtBack) || (dispAtBack && tmp.trapObj)) {
-      tmp.display();
-    }
-    else if (tmp.y > (height * 3 / 4) - 50 && !dispAtBack && !tmp.trapObj) {
+    else if ((tmp.y < (height * 3 / 4) - 50 && dispAtBack) || (dispAtBack && tmp.trapObj) || (tmp.y >= (height * 3 / 4) - 50 && !dispAtBack && !tmp.trapObj) || (tmp.name == "Clouds" && !dispAtBack)) {
       tmp.display();
     }
     
@@ -33,15 +32,19 @@ void BackObjDisp(boolean dispAtBack) { /* dispAtBack is to choose if the objects
     }
   }
   
-  if (c_player._x >= nextObjs) {
+  if (c_player._x >= 2000 && !ended) {
+    ended = true;
+    Objects.add(new DecorObj(int(c_player._x) + width * 3 / 2, "Clouds", false)); /* Afficher les nuages de fin */
+  }
+  
+  if (c_player._x >= nextObjs && !ended) {
     nextObjs = int(c_player._x + random(500, 1500));
     BackObjAdd();
   }
   
-  if (c_player._x >= nextTrap && c_player.gm) {
+  if (c_player._x >= nextTrap && c_player.gm && !ended) {
     nextTrap = int(c_player._x + random(1000, 2000));
     TrapAdd();
-    println("traping...");
   }
 }
 

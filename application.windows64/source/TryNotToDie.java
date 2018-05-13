@@ -45,8 +45,7 @@ Button joinB; /* Only one to connect to the host */
 Player c_player = null;
 
 /* BACKGROUNDS */
-PImage grass;
-PImage smile;
+PImage grass, sand, clouds;
 
 /* PROGRAM START */
 public void setup () {
@@ -60,8 +59,11 @@ public void setup () {
   grass = loadImage("grass.png");
   grass.resize(width / 2, height / 2);
   
-  smile = loadImage("Smile_icon_tmp.png");
-  smile.resize(40, 40);
+  sand = loadImage("Sand.jpg");
+  sand.resize(width / 2, height / 2);
+  
+  clouds = loadImage("Clouds.png");
+  clouds.resize(width, height / 2);
 }
 
 public void draw() {
@@ -103,7 +105,7 @@ public void draw() {
           tmpMsg = tmpMsg.substring(7);
           
           NAMES.add(tmpMsg);
-          PLAYERS.add(new Player(10, smile, tmpMsg, false, false));
+          PLAYERS.add(new Player(10, "JPC", tmpMsg, false, false));
           
           hostF[3].setNewString(hostF[3].getCurString() + tmpMsg + "\n");
         }
@@ -124,7 +126,7 @@ public void draw() {
   else if (STATE == 3) {
     joinF[3].display();
     
-    c_player = new Player(10, smile, joinF[1].getCurString(), true, false);
+    c_player = new Player(10, "JPC", joinF[1].getCurString(), true, false);
     
     ArrayList<String> msgs = getMsg(true);
     
@@ -140,14 +142,14 @@ public void draw() {
         }
         
         if (tmpMsg.contains("pseudo:") && !splits[1].equals(c_player.name)) {
-          PLAYERS.add(new Player(10, smile, splits[1], false, false));
+          PLAYERS.add(new Player(10, "JPC", splits[1], false, false));
         }
       }
     }
   }
   else if (STATE == 4) {
     if (c_player == null)
-      c_player = new Player(10, smile, "gm", true, true);
+      c_player = new Player(10, "JPC", "gm", true, true);
     
     if (back_x == -width / 2) {
       back_x = 0;
@@ -265,14 +267,18 @@ public void keyPressed() {
     boolean verification = verifyDist(PApplet.parseInt(PLAYERS.get(PLAYERS.size() - 1)._x));
     
     if (keyCode == RIGHT && verification) {
-      c_player._x += 5;
+      c_player.walking = true;
+      c_player.fw = true;
+      c_player._x += 10;
       
-      back_x -= 5;
+      back_x -= 10;
     }
     else if (keyCode == LEFT) {
-      c_player._x -= 5;
+      c_player.walking = true;
+      c_player.fw = false;
+      c_player._x -= 10;
       
-      back_x += 5;
+      back_x += 10;
     }
   }
 }
@@ -280,6 +286,7 @@ public void keyPressed() {
 public void keyReleased() {
   if (keyCode == RIGHT || keyCode == LEFT) {
     c_player._x += 0;
+    c_player.walking = false;
   }
 }
 
@@ -298,6 +305,8 @@ ArrayList<DecorObj> Objects = new ArrayList<DecorObj>();
 int nextObjs = 1000;
 int nextTrap = 0;
 
+boolean ended = false;
+
 public void BackObjDisp(boolean dispAtBack) { /* dispAtBack is to choose if the objects drawn by this function are at the background or not */
   DecorObj tmp = null;
   int xMin, xMax, yMin, yMax;
@@ -308,10 +317,7 @@ public void BackObjDisp(boolean dispAtBack) { /* dispAtBack is to choose if the 
     if (tmp.x <= PApplet.parseInt(c_player._x) - width * 3/2) {
       Objects.remove(i);
     }
-    else if ((tmp.y < (height * 3 / 4) - 50 && dispAtBack) || (dispAtBack && tmp.trapObj)) {
-      tmp.display();
-    }
-    else if (tmp.y > (height * 3 / 4) - 50 && !dispAtBack && !tmp.trapObj) {
+    else if ((tmp.y < (height * 3 / 4) - 50 && dispAtBack) || (dispAtBack && tmp.trapObj) || (tmp.y >= (height * 3 / 4) - 50 && !dispAtBack && !tmp.trapObj) || (tmp.name == "Clouds" && !dispAtBack)) {
       tmp.display();
     }
     
@@ -329,15 +335,19 @@ public void BackObjDisp(boolean dispAtBack) { /* dispAtBack is to choose if the 
     }
   }
   
-  if (c_player._x >= nextObjs) {
+  if (c_player._x >= 2000 && !ended) {
+    ended = true;
+    Objects.add(new DecorObj(PApplet.parseInt(c_player._x) + width * 3 / 2, "Clouds", false)); /* Afficher les nuages de fin */
+  }
+  
+  if (c_player._x >= nextObjs && !ended) {
     nextObjs = PApplet.parseInt(c_player._x + random(500, 1500));
     BackObjAdd();
   }
   
-  if (c_player._x >= nextTrap && c_player.gm) {
+  if (c_player._x >= nextTrap && c_player.gm && !ended) {
     nextTrap = PApplet.parseInt(c_player._x + random(1000, 2000));
     TrapAdd();
-    println("traping...");
   }
 }
 
@@ -403,7 +413,7 @@ class Button {
   int[] x;
   int[] y;
   String bTxt;
-  int[] bColor; /* 0 = fill / 1 = stroke */
+  int[] bColor;
   int action;
   int state = 0; /* 0 = released & !hovered / 1 = hovered / 2 = pressed */
   
@@ -480,7 +490,7 @@ class Button {
         
         switch(action) {
           case 1:
-            netSetup(false, ""); /* "String ip" not useful in this case because setup of Server */            
+            netSetup(false, ""); /* second argument "" not useful (but required) in this case because setup of Server */            
             STATE = action;
           break;
           
@@ -638,6 +648,8 @@ class DecorObj {
   int x, y;
   int sX, sY;
   
+  String name;
+  
   PImage img;
   PImage trap_img;
   boolean trapObj;
@@ -648,11 +660,16 @@ class DecorObj {
     x = new_x;
     int proportion = 0;
     
+    name = imgName;
+    
     if (trap) {
       y = PApplet.parseInt(height * 3 / 4);
       trap_img = loadImage(imgName + "_trap.png");
       proportion = (height/2) / trap_img.height;
       trap_img.resize(trap_img.width * proportion, height/2);
+    }
+    else if (imgName == "Clouds") {
+      y = height / 2;
     }
     else {
       y = PApplet.parseInt(random(height / 80, height / 20) * 10) + PApplet.parseInt(height / 2);
@@ -663,6 +680,9 @@ class DecorObj {
     if (imgName == "arbre") {
       proportion = (height / 3) / img.height;
       img.resize(img.width * proportion, height / 3);
+    }
+    else if (imgName == "Clouds") {
+      img.resize(width * 2, height * 2);
     }
     else {
       proportion = (height / 6) / img.height;
@@ -799,9 +819,10 @@ public ArrayList<String> getMsg(boolean _cl) {
     while(cl.available() > 0) {
       String tmpStr = cl.readStringUntil('-');
       
-      tmpStr = tmpStr.substring(0, tmpStr.length() - 1);
-      
-      msgs.add(tmpStr);
+      if (tmpStr != null && !tmpStr.equals("")) {
+        tmpStr = tmpStr.substring(0, tmpStr.length() - 1); 
+        msgs.add(tmpStr);
+      }
     }
   }
   else {
@@ -810,7 +831,7 @@ public ArrayList<String> getMsg(boolean _cl) {
     while(tmp != null) {
       String tmpStr = tmp.readStringUntil('-');
       
-      if (tmpStr != null) {
+      if (tmpStr != null && !tmpStr.equals("")) {
         tmpStr = tmpStr.substring(0, tmpStr.length() - 1);
         msgs.add(tmpStr);
       }
@@ -828,21 +849,37 @@ class Player {
   float g;
   
   int life = 3;
+  int anim_tempo = 0;
+  int anim_state = 0;
   
-  PImage skin;
+  PImage[] skin = new PImage[6];
   PImage heart, skull;
   String name;
   
+  boolean fw = true;
+  boolean walking = false;
   boolean gm;
   boolean controlled;
   boolean jumping;
   
-  Player(float _g, PImage _skin, String _name, boolean control, boolean _gm) {
+  Player(float _g, String _skin, String _name, boolean control, boolean _gm) {
     _x = width / 2; _y = height * 3 / 4;
     sY = 0;
     jumping = false;
     g = _g;
-    skin = _skin;
+    
+    skin[0] = loadImage(_skin + "_idle_r.png");
+    skin[1] = loadImage(_skin + "_idle_l.png");
+    skin[2] = loadImage(_skin + "_run0_r.png");
+    skin[3] = loadImage(_skin + "_run1_r.png");
+    skin[4] = loadImage(_skin + "_run0_l.png");
+    skin[5] = loadImage(_skin + "_run1_l.png");
+    
+    for (int s = 0; s < 6; s++) {
+      int proportion = PApplet.parseInt(150 / skin[s].height);
+      skin[s].resize(proportion * skin[s].width, 150);
+    }
+    
     name = _name;
     controlled = control;
     gm = _gm;
@@ -868,14 +905,31 @@ class Player {
     }
   }
   
-  public void display(int x_control) {
+  public void display(int x_control) {    
     if (controlled && !gm) {
+      if (anim_tempo <= millis()) {
+        anim_state = abs(anim_state - 1); /* passage infini de 0 à 1 ou de 1 à 0 */
+        anim_tempo = millis() + 200; /* toute les 200 millisecondes une nouvelle anim apparait */
+      }
+      
       fill(0, 0, 255);
       textSize(20);
-      text(name, width / 2, _y - 40);
-    
-      fill(255);
-      rect(width / 2, _y, 40, 40);
+      text(name, width / 2, _y - 180);
+      
+      imageMode(CENTER);
+      
+      if (fw && walking) {
+        image(skin[2 + anim_state], width / 2, height * 3 / 4 - 75);
+      }
+      else if (fw && !walking) {
+        image(skin[0], width / 2, height * 3 / 4 - 75);
+      }
+      else if (!fw && walking) {
+        image(skin[4 + anim_state], width / 2, height * 3 / 4 - 75);
+      }
+      else if (!fw && !walking) {
+        image(skin[1], width / 2, height * 3 / 4 - 75);
+      }
     }
     else if (!gm) {
       fill(255);
@@ -889,19 +943,19 @@ class Player {
     if (!gm && controlled) {
       imageMode(CENTER);
       if (life == 3) {
-        image(heart, width / 2 - 20, _y - 60);
-        image(heart, width / 2, _y - 60);
-        image(heart, width / 2 + 20, _y - 60);
+        image(heart, width / 2 - 20, _y - 165);
+        image(heart, width / 2, _y - 165);
+        image(heart, width / 2 + 20, _y - 165);
       }
       else if (life == 2) {
-        image(heart, width / 2 - 20, _y - 60);
-        image(heart, width / 2, _y - 60);
-        image(skull, width / 2 + 20, _y - 60);
+        image(heart, width / 2 - 20, _y - 165);
+        image(heart, width / 2, _y - 165);
+        image(skull, width / 2 + 20, _y - 165);
       }
       else if (life == 1) {
-        image(heart, width / 2 - 20, _y - 60);
-        image(skull, width / 2, _y - 60);
-        image(skull, width / 2 + 20, _y - 60);
+        image(heart, width / 2 - 20, _y - 165);
+        image(skull, width / 2, _y - 165);
+        image(skull, width / 2 + 20, _y - 165);
       }
       imageMode(CORNER);
     }

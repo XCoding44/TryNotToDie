@@ -2,7 +2,7 @@ class Button {
   int[] x;
   int[] y;
   String bTxt;
-  int[] bColor; /* 0 = fill / 1 = stroke */
+  int[] bColor;
   int action;
   int state = 0; /* 0 = released & !hovered / 1 = hovered / 2 = pressed */
   
@@ -79,7 +79,7 @@ class Button {
         
         switch(action) {
           case 1:
-            netSetup(false, ""); /* "String ip" not useful in this case because setup of Server */            
+            netSetup(false, ""); /* second argument "" not useful (but required) in this case because setup of Server */            
             STATE = action;
           break;
           
