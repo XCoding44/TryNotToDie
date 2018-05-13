@@ -27,8 +27,7 @@ Button joinB; /* Only one to connect to the host */
 Player c_player = null;
 
 /* BACKGROUNDS */
-PImage grass;
-PImage smile;
+PImage grass, sand, smile, clouds;
 
 /* PROGRAM START */
 void setup () {
@@ -41,6 +40,12 @@ void setup () {
   
   grass = loadImage("grass.png");
   grass.resize(width / 2, height / 2);
+  
+  sand = loadImage("Sand.jpg");
+  sand.resize(width / 2, height / 2);
+  
+  clouds = loadImage("Clouds.png");
+  clouds.resize(width, height / 2);
   
   smile = loadImage("Smile_icon_tmp.png");
   smile.resize(40, 40);
@@ -247,18 +252,26 @@ void keyPressed() {
     boolean verification = verifyDist(int(PLAYERS.get(PLAYERS.size() - 1)._x));
     
     if (keyCode == RIGHT && verification) {
+<<<<<<< HEAD
       c_player._x += 5;
       c_player.walking = true;
       c_player.fw = true;
+=======
+      c_player._x += 10;
+>>>>>>> 1af03e579c08b9ba9d6f249f508b82e34415dc87
       
-      back_x -= 5;
+      back_x -= 10;
     }
     else if (keyCode == LEFT) {
+<<<<<<< HEAD
       c_player._x -= 5;
       c_player.walking = true;
       c_player.fw = false;
+=======
+      c_player._x -= 10;
+>>>>>>> 1af03e579c08b9ba9d6f249f508b82e34415dc87
       
-      back_x += 5;
+      back_x += 10;
     }
   }
 }

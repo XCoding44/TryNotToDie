@@ -29,9 +29,10 @@ ArrayList<String> getMsg(boolean _cl) {
     while(cl.available() > 0) {
       String tmpStr = cl.readStringUntil('-');
       
-      tmpStr = tmpStr.substring(0, tmpStr.length() - 1);
-      
-      msgs.add(tmpStr);
+      if (tmpStr != null && !tmpStr.equals("")) {
+        tmpStr = tmpStr.substring(0, tmpStr.length() - 1); 
+        msgs.add(tmpStr);
+      }
     }
   }
   else {
@@ -40,7 +41,7 @@ ArrayList<String> getMsg(boolean _cl) {
     while(tmp != null) {
       String tmpStr = tmp.readStringUntil('-');
       
-      if (tmpStr != null) {
+      if (tmpStr != null && !tmpStr.equals("")) {
         tmpStr = tmpStr.substring(0, tmpStr.length() - 1);
         msgs.add(tmpStr);
       }
