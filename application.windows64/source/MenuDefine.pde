@@ -65,11 +65,17 @@ void menuDef() {
   int[] x_name = {int(width * 5 / 20), int(width * 16 / 20), int(width * 15 / 20), int(width * 4 / 20)};
   int[] y_name = {int(height * 3 / 20), int(height * 3 / 20), int(height * 5 / 20), int(height * 5 / 20)};
   
+  int[] x_character = {int(width * 1 / 10), int(width * 1 / 10), int(width * 5 / 20), int(width * 5 / 20), int(width * 4 / 10), int(width * 4 / 10), int(width * 11 / 20), int(width * 11 / 20), int(width * 7 / 10), int(width * 7 / 10), int(width * 17 / 20), int(width * 17 / 20)};
+  int[] y_character = {int(height * 3 / 10), int(height * 4 / 10), int(height * 3 / 10), int(height * 4 / 10), int(height * 3 / 10), int(height * 4 / 10), int(height * 3 / 10), int(height * 4 / 10), int(height * 3 / 10), int(height * 4 / 10), int(height * 3 / 10), int(height * 4 / 10)};
+  
   int[] x_error = {int(width / 2 - 10), int(width / 2 + 10), int(width / 2 + 10), int(width / 2 - 10)};
   int[] y_error = {int(height * 8 / 10), int(height * 8 / 10), int(height * 9 / 10), int(height * 9 / 10)};
   
   int[] x_waiting = {int(width / 2 - 10), int(width / 2 + 10), int(width / 2 + 10), int(width / 2 - 10)};
   int[] y_waiting = {int(height * 4 / 10), int(height * 4 / 10), int(height * 6 / 10), int(height * 6 / 10)};
+  String[] ch_charac = {"JPC", "Winnie", "F_Hollande", "Cartman", "Trump"};
+  
+  joinC = new ChoiceBox(x_character, y_character, ch_charac, c_join);
   
   joinF = new TextField[4];
   joinF[0] = new TextField(true, x_join_ip, y_join_ip, "> Host IP <", c_join);

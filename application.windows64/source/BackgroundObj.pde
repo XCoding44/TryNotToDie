@@ -18,6 +18,20 @@ void BackObjDisp(boolean dispAtBack) { /* dispAtBack is to choose if the objects
       tmp.display();
     }
     
+    if (tmp.trapObj && tmp.opened && !c_player.gm) {
+      float distance = sqrt(sq(tmp.x - c_player._x) + sq(tmp.y - c_player._y));
+      println(distance);
+      
+      if (distance <= tmp.sX / 2 && c_player.life > 1) {
+        c_player.life -= 1;
+        c_player._x += tmp.sX;
+      }
+      else if (distance <= tmp.sX/2 && c_player.life == 1) {
+        c_player.life -= 1;
+        sendMsg(true, "died:" + c_player.name + "-");
+      }
+    }
+    
     xMin = int(tmp.x - c_player._x - tmp.sX/2);
     xMax = int(tmp.x - c_player._x + tmp.sX/2);
     yMin = int(tmp.y - tmp.sY/2);

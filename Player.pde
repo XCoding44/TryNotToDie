@@ -18,11 +18,11 @@ class Player {
   boolean controlled;
   boolean jumping;
   
-  Player(float _g, String _skin, String _name, boolean control, boolean _gm) {
+  Player(String _skin, String _name, boolean control, boolean _gm) {
     _x = width / 2; _y = height * 3 / 4;
     sY = 0;
     jumping = false;
-    g = _g;
+    g = 0.2;
     
     skin[0] = loadImage(_skin + "_idle_r.png");
     skin[1] = loadImage(_skin + "_idle_l.png");
@@ -49,20 +49,20 @@ class Player {
   
   public void move() {
     if (!gm) {
-      _y += sY;
+      _y -= sY;
     
       if (jumping) {
-        sY += g;
+        sY -= g;
       }
     
-      if (sY > 0 && jumping) {
+      if (sY < 0 && jumping) {
         checkCollision();
       }
     }
   }
   
   public void display(int x_control) {    
-    if (controlled && !gm) {
+    if (controlled && !gm && life != 0) {
       if (anim_tempo <= millis()) {
         anim_state = abs(anim_state - 1); /* passage infini de 0 à 1 ou de 1 à 0 */
         anim_tempo = millis() + 200; /* toute les 200 millisecondes une nouvelle anim apparait */
@@ -75,19 +75,19 @@ class Player {
       imageMode(CENTER);
       
       if (fw && walking) {
-        image(skin[2 + anim_state], width / 2, height * 3 / 4 - 75);
+        image(skin[2 + anim_state], width / 2, _y - 75);
       }
       else if (fw && !walking) {
-        image(skin[0], width / 2, height * 3 / 4 - 75);
+        image(skin[0], width / 2, _y - 75);
       }
       else if (!fw && walking) {
-        image(skin[4 + anim_state], width / 2, height * 3 / 4 - 75);
+        image(skin[4 + anim_state], width / 2, _y - 75);
       }
       else if (!fw && !walking) {
-        image(skin[1], width / 2, height * 3 / 4 - 75);
+        image(skin[1], width / 2, _y - 75);
       }
     }
-    else if (!gm) {
+    else if (!gm && life != 0) {
       fill(255);
       textSize(10);
       text(name, (_x - x_control) + (width / 2), _y - 40);
@@ -96,7 +96,7 @@ class Player {
       rect((_x - x_control) + (width / 2), _y, 40, 40);
     }
     
-    if (!gm && controlled) {
+    if (!gm && controlled && life != 0) {
       imageMode(CENTER);
       if (life == 3) {
         image(heart, width / 2 - 20, _y - 165);
@@ -115,13 +115,18 @@ class Player {
       }
       imageMode(CORNER);
     }
+    
+    if (life == 0) {
+      //image game over in center
+    }
   }
   
   public void checkCollision() {
     if (jumping) {
-      if (_y + 10 > height / 2)  {
+      if (_y > height * 3 / 4)  {
         sY = 0;
         jumping = false;
+        _y = height * 3 / 4;
       }
     }
   }

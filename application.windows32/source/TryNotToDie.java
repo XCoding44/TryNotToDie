@@ -39,6 +39,7 @@ TextField[] hostF; /* One for the ip (display), three other for the labels, one 
 
 /* JOIN MENU */
 TextField[] joinF; /* One for the ip, the other one for the name, the last one for the waiting screen */
+ChoiceBox joinC;
 Button joinB; /* Only one to connect to the host */
 
 /* PLAYER */
@@ -105,7 +106,7 @@ public void draw() {
           tmpMsg = tmpMsg.substring(7);
           
           NAMES.add(tmpMsg);          
-          PLAYERS.add(new Player(10, "JPC", tmpMsg, false, false));
+          PLAYERS.add(new Player("JPC", tmpMsg, false, false));
           
           hostF[3].setNewString(hostF[3].getCurString() + tmpMsg + "\n");
         }
@@ -120,13 +121,16 @@ public void draw() {
     joinB.display();
     joinB.checkState();
     
+    joinC.display();
+    joinC.checkState();
+    
     homeReturn.display();
     homeReturn.checkState();
   }
   else if (STATE == 3) {
     joinF[3].display();
     
-    c_player = new Player(10, "JPC", joinF[1].getCurString(), true, false);
+    c_player = new Player(joinC.getChoiceAsStr(), joinF[1].getCurString(), true, false);
     
     ArrayList<String> msgs = getMsg(true);
     
@@ -143,10 +147,10 @@ public void draw() {
         
         if (tmpMsg.contains("pseudo:") && !splits[1].equals(c_player.name)) {
           if (!splits[1].equals("gm")) {
-            PLAYERS.add(new Player(10, "JPC", splits[1], false, false));
+            PLAYERS.add(new Player("JPC", splits[1], false, false));
           }
           else {
-            PLAYERS.add(new Player(10, "JPC", splits[1], false, true));
+            PLAYERS.add(new Player("JPC", splits[1], false, true));
           }
         }
       }
@@ -154,7 +158,7 @@ public void draw() {
   }
   else if (STATE == 4) {
     if (c_player == null)
-      c_player = new Player(10, "JPC", "gm", true, true);
+      c_player = new Player("JPC", "gm", true, true);
     
     if (back_x == -width / 2) {
       back_x = 0;
@@ -186,6 +190,8 @@ public void draw() {
         }
         else if (msg.contains("trap:")) {
           String[] splits = msg.split(":");
+          
+          println("ok");
           
           Objects.add(new DecorObj(PApplet.parseInt(splits[1]), splits[2], true));
         }
@@ -292,22 +298,28 @@ public void keyPressed() {
       activeTF = null;
     }
   }
-  else if (STATE == 4) {
-    boolean verification = verifyDist(PApplet.parseInt(PLAYERS.get(PLAYERS.size() - 1)._x));
-    
-    if (keyCode == RIGHT && verification) {
+  else if (STATE == 4) {    
+    switch (keyCode) {
+    case RIGHT:
       c_player.walking = true;
       c_player.fw = true;
       c_player._x += 10;
       
       back_x -= 10;
-    }
-    else if (keyCode == LEFT) {
+    break;
+    
+    case LEFT:
       c_player.walking = true;
       c_player.fw = false;
       c_player._x -= 10;
       
       back_x += 10;
+    break;
+    
+    case UP:
+      c_player.jumping = true;
+      c_player.sY = 10.0f;
+    break;
     }
   }
 }
@@ -348,6 +360,20 @@ public void BackObjDisp(boolean dispAtBack) { /* dispAtBack is to choose if the 
     }
     else if ((tmp.y < (height * 3 / 4) - 50 && dispAtBack) || (dispAtBack && tmp.trapObj) || (tmp.y >= (height * 3 / 4) - 50 && !dispAtBack && !tmp.trapObj) || (tmp.name == "Clouds" && !dispAtBack)) {
       tmp.display();
+    }
+    
+    if (tmp.trapObj && tmp.opened && !c_player.gm) {
+      float distance = sqrt(sq(tmp.x - c_player._x) + sq(tmp.y - c_player._y));
+      println(distance);
+      
+      if (distance <= tmp.sX / 2 && c_player.life > 1) {
+        c_player.life -= 1;
+        c_player._x += tmp.sX;
+      }
+      else if (distance <= tmp.sX/2 && c_player.life == 1) {
+        c_player.life -= 1;
+        sendMsg(true, "died:" + c_player.name + "-");
+      }
     }
     
     xMin = PApplet.parseInt(tmp.x - c_player._x - tmp.sX/2);
@@ -856,11 +882,17 @@ public void menuDef() {
   int[] x_name = {PApplet.parseInt(width * 5 / 20), PApplet.parseInt(width * 16 / 20), PApplet.parseInt(width * 15 / 20), PApplet.parseInt(width * 4 / 20)};
   int[] y_name = {PApplet.parseInt(height * 3 / 20), PApplet.parseInt(height * 3 / 20), PApplet.parseInt(height * 5 / 20), PApplet.parseInt(height * 5 / 20)};
   
+  int[] x_character = {PApplet.parseInt(width * 1 / 10), PApplet.parseInt(width * 1 / 10), PApplet.parseInt(width * 5 / 20), PApplet.parseInt(width * 5 / 20), PApplet.parseInt(width * 4 / 10), PApplet.parseInt(width * 4 / 10), PApplet.parseInt(width * 11 / 20), PApplet.parseInt(width * 11 / 20), PApplet.parseInt(width * 7 / 10), PApplet.parseInt(width * 7 / 10), PApplet.parseInt(width * 17 / 20), PApplet.parseInt(width * 17 / 20)};
+  int[] y_character = {PApplet.parseInt(height * 3 / 10), PApplet.parseInt(height * 4 / 10), PApplet.parseInt(height * 3 / 10), PApplet.parseInt(height * 4 / 10), PApplet.parseInt(height * 3 / 10), PApplet.parseInt(height * 4 / 10), PApplet.parseInt(height * 3 / 10), PApplet.parseInt(height * 4 / 10), PApplet.parseInt(height * 3 / 10), PApplet.parseInt(height * 4 / 10), PApplet.parseInt(height * 3 / 10), PApplet.parseInt(height * 4 / 10)};
+  
   int[] x_error = {PApplet.parseInt(width / 2 - 10), PApplet.parseInt(width / 2 + 10), PApplet.parseInt(width / 2 + 10), PApplet.parseInt(width / 2 - 10)};
   int[] y_error = {PApplet.parseInt(height * 8 / 10), PApplet.parseInt(height * 8 / 10), PApplet.parseInt(height * 9 / 10), PApplet.parseInt(height * 9 / 10)};
   
   int[] x_waiting = {PApplet.parseInt(width / 2 - 10), PApplet.parseInt(width / 2 + 10), PApplet.parseInt(width / 2 + 10), PApplet.parseInt(width / 2 - 10)};
   int[] y_waiting = {PApplet.parseInt(height * 4 / 10), PApplet.parseInt(height * 4 / 10), PApplet.parseInt(height * 6 / 10), PApplet.parseInt(height * 6 / 10)};
+  String[] ch_charac = {"JPC", "Winnie", "F_Hollande", "Cartman", "Trump"};
+  
+  joinC = new ChoiceBox(x_character, y_character, ch_charac, c_join);
   
   joinF = new TextField[4];
   joinF[0] = new TextField(true, x_join_ip, y_join_ip, "> Host IP <", c_join);
@@ -947,11 +979,11 @@ class Player {
   boolean controlled;
   boolean jumping;
   
-  Player(float _g, String _skin, String _name, boolean control, boolean _gm) {
+  Player(String _skin, String _name, boolean control, boolean _gm) {
     _x = width / 2; _y = height * 3 / 4;
     sY = 0;
     jumping = false;
-    g = _g;
+    g = 0.2f;
     
     skin[0] = loadImage(_skin + "_idle_r.png");
     skin[1] = loadImage(_skin + "_idle_l.png");
@@ -978,20 +1010,20 @@ class Player {
   
   public void move() {
     if (!gm) {
-      _y += sY;
+      _y -= sY;
     
       if (jumping) {
-        sY += g;
+        sY -= g;
       }
     
-      if (sY > 0 && jumping) {
+      if (sY < 0 && jumping) {
         checkCollision();
       }
     }
   }
   
   public void display(int x_control) {    
-    if (controlled && !gm) {
+    if (controlled && !gm && life != 0) {
       if (anim_tempo <= millis()) {
         anim_state = abs(anim_state - 1); /* passage infini de 0 à 1 ou de 1 à 0 */
         anim_tempo = millis() + 200; /* toute les 200 millisecondes une nouvelle anim apparait */
@@ -1004,19 +1036,19 @@ class Player {
       imageMode(CENTER);
       
       if (fw && walking) {
-        image(skin[2 + anim_state], width / 2, height * 3 / 4 - 75);
+        image(skin[2 + anim_state], width / 2, _y - 75);
       }
       else if (fw && !walking) {
-        image(skin[0], width / 2, height * 3 / 4 - 75);
+        image(skin[0], width / 2, _y - 75);
       }
       else if (!fw && walking) {
-        image(skin[4 + anim_state], width / 2, height * 3 / 4 - 75);
+        image(skin[4 + anim_state], width / 2, _y - 75);
       }
       else if (!fw && !walking) {
-        image(skin[1], width / 2, height * 3 / 4 - 75);
+        image(skin[1], width / 2, _y - 75);
       }
     }
-    else if (!gm) {
+    else if (!gm && life != 0) {
       fill(255);
       textSize(10);
       text(name, (_x - x_control) + (width / 2), _y - 40);
@@ -1025,7 +1057,7 @@ class Player {
       rect((_x - x_control) + (width / 2), _y, 40, 40);
     }
     
-    if (!gm && controlled) {
+    if (!gm && controlled && life != 0) {
       imageMode(CENTER);
       if (life == 3) {
         image(heart, width / 2 - 20, _y - 165);
@@ -1044,13 +1076,18 @@ class Player {
       }
       imageMode(CORNER);
     }
+    
+    if (life == 0) {
+      //image game over in center
+    }
   }
   
   public void checkCollision() {
     if (jumping) {
-      if (_y + 10 > height / 2)  {
+      if (_y > height * 3 / 4)  {
         sY = 0;
         jumping = false;
+        _y = height * 3 / 4;
       }
     }
   }

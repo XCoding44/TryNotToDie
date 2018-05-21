@@ -21,6 +21,7 @@ TextField[] hostF; /* One for the ip (display), three other for the labels, one 
 
 /* JOIN MENU */
 TextField[] joinF; /* One for the ip, the other one for the name, the last one for the waiting screen */
+ChoiceBox joinC;
 Button joinB; /* Only one to connect to the host */
 
 /* PLAYER */
@@ -87,7 +88,7 @@ void draw() {
           tmpMsg = tmpMsg.substring(7);
           
           NAMES.add(tmpMsg);          
-          PLAYERS.add(new Player(10, "JPC", tmpMsg, false, false));
+          PLAYERS.add(new Player("JPC", tmpMsg, false, false));
           
           hostF[3].setNewString(hostF[3].getCurString() + tmpMsg + "\n");
         }
@@ -102,13 +103,16 @@ void draw() {
     joinB.display();
     joinB.checkState();
     
+    joinC.display();
+    joinC.checkState();
+    
     homeReturn.display();
     homeReturn.checkState();
   }
   else if (STATE == 3) {
     joinF[3].display();
     
-    c_player = new Player(10, "JPC", joinF[1].getCurString(), true, false);
+    c_player = new Player(joinC.getChoiceAsStr(), joinF[1].getCurString(), true, false);
     
     ArrayList<String> msgs = getMsg(true);
     
@@ -125,10 +129,10 @@ void draw() {
         
         if (tmpMsg.contains("pseudo:") && !splits[1].equals(c_player.name)) {
           if (!splits[1].equals("gm")) {
-            PLAYERS.add(new Player(10, "JPC", splits[1], false, false));
+            PLAYERS.add(new Player("JPC", splits[1], false, false));
           }
           else {
-            PLAYERS.add(new Player(10, "JPC", splits[1], false, true));
+            PLAYERS.add(new Player("JPC", splits[1], false, true));
           }
         }
       }
@@ -136,7 +140,7 @@ void draw() {
   }
   else if (STATE == 4) {
     if (c_player == null)
-      c_player = new Player(10, "JPC", "gm", true, true);
+      c_player = new Player("JPC", "gm", true, true);
     
     if (back_x == -width / 2) {
       back_x = 0;
@@ -168,6 +172,8 @@ void draw() {
         }
         else if (msg.contains("trap:")) {
           String[] splits = msg.split(":");
+          
+          println("ok");
           
           Objects.add(new DecorObj(int(splits[1]), splits[2], true));
         }
@@ -274,22 +280,28 @@ void keyPressed() {
       activeTF = null;
     }
   }
-  else if (STATE == 4) {
-    boolean verification = verifyDist(int(PLAYERS.get(PLAYERS.size() - 1)._x));
-    
-    if (keyCode == RIGHT && verification) {
+  else if (STATE == 4) {    
+    switch (keyCode) {
+    case RIGHT:
       c_player.walking = true;
       c_player.fw = true;
       c_player._x += 10;
       
       back_x -= 10;
-    }
-    else if (keyCode == LEFT) {
+    break;
+    
+    case LEFT:
       c_player.walking = true;
       c_player.fw = false;
       c_player._x -= 10;
       
       back_x += 10;
+    break;
+    
+    case UP:
+      c_player.jumping = true;
+      c_player.sY = 10.0;
+    break;
     }
   }
 }
